@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Gravity Simulator - WebGL</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Load Three.js and OrbitControls via CDN -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+            }
+        }
+    </script>
+</head>
+<body>
+    <div id="canvas-container"></div>
+
+    <!-- UI Overlay container -->
+    <div id="ui-layer">
+        <!-- Left Panel: Controls and Global Status -->
+        <div id="left-panel" class="panel">
+            <div class="panel-header">
+                <div>
+                    <h2 class="title">3D GRAVITY SIMULATOR</h2>
+                    <div class="subtitle">Spacetime Curvature Visualization</div>
+                </div>
+                <button id="toggle-left-panel" class="toggle-btn">−</button>
+            </div>
+            
+            <div id="left-panel-content" class="panel-content">
+                <div class="status-section">
+                    <div class="row"><span class="label">Status:</span> <span id="status-text" class="value running">RUNNING</span></div>
+                    <div class="row"><span class="label">Time Scale:</span> <span id="time-scale-text" class="value">1.0x</span></div>
+                    <div class="row"><span class="label">Planets:</span> <span id="planet-count-text" class="value">0</span></div>
+                </div>
+
+                <div class="section-title">─── CONTROLS ───</div>
+                <div class="controls-grid">
+                    <div class="key">SPACE</div><div class="action">Pause/Resume</div>
+                    <div class="key">R</div><div class="action">Reset</div>
+                    <div class="key">1-6</div><div class="action">Presets</div>
+                    <div class="key">N</div><div class="action">Add planet</div>
+                    <div class="key">G</div><div class="action">Grid</div>
+                    <div class="key">T</div><div class="action">Trails</div>
+                    <div class="key">V</div><div class="action">Velocity</div>
+                    <div class="key">F</div><div class="action">Forces</div>
+                    <div class="key">C</div><div class="action">Track Planet</div>
+                    <div class="key">+/-</div><div class="action">Time scale</div>
+                    <div class="key">Click</div><div class="action">Select</div>
+                    <div class="key">Mouse</div><div class="action">Camera</div>
+                </div>
+
+                <div class="section-title">─── TOGGLES ───</div>
+                <div class="toggles-list">
+                    <button class="toggle-option active" id="toggle-grid"><span class="icon">●</span> Grid</button>
+                    <button class="toggle-option active" id="toggle-trails"><span class="icon">●</span> Trails</button>
+                    <button class="toggle-option" id="toggle-velocity"><span class="icon">○</span> Velocity</button>
+                    <button class="toggle-option" id="toggle-forces"><span class="icon">○</span> Forces</button>
+                    <button class="toggle-option" id="toggle-tracking"><span class="icon">○</span> Tracking</button>
+                </div>
+
+                <div class="grid-res-control">
+                    <span class="label">Grid Res: <span id="grid-res-text">250</span></span>
+                    <button id="btn-res-minus" class="btn small">-</button>
+                    <button id="btn-res-plus" class="btn small">+</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Left Bottom: Presets Panel -->
+        <div id="presets-panel" class="panel bottom-panel">
+             <div class="panel-header">
+                <div class="title-small">Presets</div>
+                <button id="toggle-presets-panel" class="toggle-btn">−</button>
+            </div>
+            <div id="presets-panel-content" class="panel-content preset-grid">
+                <button class="btn preset-btn" data-preset="1">1: Solar System</button>
+                <button class="btn preset-btn" data-preset="2">2: Binary System</button>
+                <button class="btn preset-btn" data-preset="3">3: Trinary System</button>
+                <button class="btn preset-btn" data-preset="4">4: Figure Eight</button>
+                <button class="btn preset-btn" data-preset="5">5: Collision</button>
+                <button class="btn preset-btn" data-preset="6">6: Random Cluster</button>
+            </div>
+        </div>
+
+        <!-- Right Panel: Planet Editor -->
+        <div id="right-panel" class="panel editor-panel">
+            <div class="panel-header">
+                <div class="title-row">
+                    <div id="editor-planet-color" class="color-dot"></div>
+                    <h2 id="editor-planet-name" class="title">No Selection</h2>
+                </div>
+                <button id="toggle-right-panel" class="toggle-btn">−</button>
+            </div>
+            
+            <div id="right-panel-content" class="panel-content hidden">
+                <div id="editor-empty-state">
+                    <div class="msg">No Planet Selected</div>
+                    <div class="hint">Click on a planet to select</div>
+                </div>
+
+                <div id="editor-active-state" style="display: none;">
+                    <div class="section-title">─── Properties ───</div>
+                    <div class="input-grid">
+                        <div class="input-group">
+                            <label>Mass (m)</label>
+                            <input type="number" id="inp-mass" step="1">
+                        </div>
+                        <div class="input-group">
+                            <label>Radius (r)</label>
+                            <input type="number" id="inp-radius" step="0.1">
+                        </div>
+                        <div class="input-group">
+                            <label>Density (ρ)</label>
+                            <input type="number" id="inp-density" step="0.1">
+                        </div>
+                        <div class="input-group">
+                            <label>Surface g</label>
+                            <input type="number" id="inp-surface-g" readonly>
+                        </div>
+                        <div class="input-group full-width">
+                            <label>Net Force (F = ma)</label>
+                            <input type="number" id="inp-net-force" readonly>
+                        </div>
+                    </div>
+
+                    <div class="section-title">─── Position ───</div>
+                    <div class="input-grid-3">
+                        <div class="input-group">
+                            <label>X</label>
+                            <input type="number" id="inp-pos-x" step="0.1">
+                        </div>
+                        <div class="input-group">
+                            <label>Y</label>
+                            <input type="number" id="inp-pos-y" step="0.1">
+                        </div>
+                        <div class="input-group">
+                            <label>Z</label>
+                            <input type="number" id="inp-pos-z" step="0.1">
+                        </div>
+                    </div>
+
+                    <div class="section-title">─── Velocity ───</div>
+                    <div class="input-grid-3">
+                        <div class="input-group">
+                            <label>X</label>
+                            <input type="number" id="inp-vel-x" step="0.1">
+                        </div>
+                        <div class="input-group">
+                            <label>Y</label>
+                            <input type="number" id="inp-vel-y" step="0.1">
+                        </div>
+                        <div class="input-group">
+                            <label>Z</label>
+                            <input type="number" id="inp-vel-z" step="0.1">
+                        </div>
+                    </div>
+
+                    <div class="action-buttons">
+                        <button id="btn-apply" class="btn btn-success">Apply</button>
+                        <button id="btn-delete" class="btn btn-danger">Delete</button>
+                    </div>
+
+                    <div class="formulas">
+                        <div class="section-title">─── Formulas ───</div>
+                        <div>Force: F = G×m₁×m₂/r²</div>
+                        <div>Surface g: g = G×m/r²</div>
+                        <div id="formula-g">G = 0.0667 (scaled)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Module Entry -->
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>

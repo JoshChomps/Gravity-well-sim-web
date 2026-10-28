@@ -1,0 +1,364 @@
+/* Base Styling */
+body {
+    margin: 0;
+    overflow: hidden;
+    background-color: #05050d;
+    color: white;
+    font-family: monospace;
+    user-select: none;
+}
+
+#canvas-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1;
+}
+
+#ui-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 10;
+    pointer-events: none;
+    /* Let clicks pass through to canvas by default */
+}
+
+/* Panels */
+.panel {
+    position: absolute;
+    background: rgba(10, 15, 25, 0.86);
+    border: 2px solid rgba(60, 100, 150, 0.6);
+    border-radius: 8px;
+    padding: 10px;
+    pointer-events: auto;
+    /* Re-enable clicks for UI elements */
+    backdrop-filter: blur(4px);
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    transition: height 0.3s ease;
+}
+
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 10px;
+}
+
+.panel-content {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.panel-content.hidden {
+    display: none;
+}
+
+
+/* Left Panel */
+#left-panel {
+    top: 10px;
+    left: 10px;
+    width: 250px;
+}
+
+.title {
+    margin: 0;
+    font-size: 16px;
+    font-weight: bold;
+    color: #64b4ff;
+}
+
+.title-small {
+    margin: 0;
+    font-size: 14px;
+    font-weight: bold;
+    color: #64b4ff;
+    padding-top: 4px;
+}
+
+
+.subtitle {
+    font-size: 14px;
+    color: #9696aa;
+    margin-top: 4px;
+}
+
+/* Status */
+.status-section {
+    margin-top: 10px;
+    margin-bottom: 15px;
+    font-size: 14px;
+}
+
+.status-section .row {
+    margin-bottom: 4px;
+}
+
+.status-section .label {
+    color: #c8c8c8;
+}
+
+.status-section .value {
+    display: inline-block;
+    min-width: 50px;
+}
+
+.status-section .running {
+    color: #64ff96;
+}
+
+.status-section .paused {
+    color: #ff9664;
+}
+
+/* Sections */
+.section-title {
+    color: #64b4ff;
+    margin: 10px 0 5px 0;
+}
+
+/* Controls Grid */
+.controls-grid {
+    display: grid;
+    grid-template-columns: 60px 1fr;
+    row-gap: 4px;
+    font-size: 14px;
+}
+
+.controls-grid .key {
+    color: #ffc864;
+}
+
+.controls-grid .action {
+    color: #b4b4b4;
+}
+
+/* Toggles List */
+.toggles-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.toggle-option {
+    background: transparent;
+    border: none;
+    color: #ff6464;
+    text-align: left;
+    font-family: monospace;
+    font-size: 14px;
+    cursor: pointer;
+    padding: 2px 0;
+    width: fit-content;
+}
+
+.toggle-option.active {
+    color: #64ff96;
+}
+
+.toggle-option .icon {
+    margin-right: 5px;
+}
+
+/* Grid Res Control */
+.grid-res-control {
+    margin-top: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #c8c8c8;
+    font-size: 14px;
+}
+
+
+/* Input Form Elements */
+.btn {
+    background: #3c6496;
+    border: 2px solid #648cb4;
+    color: white;
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-family: monospace;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn:hover {
+    background: #5a82b4;
+}
+
+.btn.small {
+    padding: 2px 8px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.toggle-btn {
+    background: #283c50;
+    border: none;
+    color: white;
+    font-family: monospace;
+    font-size: 16px;
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.toggle-btn:hover {
+    background: #3c5064;
+}
+
+
+/* Presets Panel */
+#presets-panel {
+    bottom: 10px;
+    right: 10px;
+    width: 250px;
+}
+
+.preset-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.preset-btn {
+    font-size: 12px;
+    text-align: left;
+    padding: 6px;
+}
+
+/* Right Panel (Editor) */
+#right-panel {
+    top: 10px;
+    right: 10px;
+    width: 220px;
+}
+
+.title-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.color-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: transparent;
+}
+
+#editor-empty-state {
+    padding: 20px 0;
+}
+
+#editor-empty-state .msg {
+    color: #9696aa;
+    font-size: 16px;
+}
+
+#editor-empty-state .hint {
+    color: #646478;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+/* Editor Inputs */
+.input-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.input-grid-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.input-group.full-width {
+    grid-column: 1 / -1;
+}
+
+.input-group label {
+    font-size: 12px;
+    color: #96aa32;
+    /* matching approx label colors */
+    color: #96aabe;
+    margin-bottom: 4px;
+}
+
+.input-group input {
+    background: #192332;
+    border: 2px solid #3c5064;
+    color: white;
+    font-family: monospace;
+    font-size: 14px;
+    padding: 4px;
+    border-radius: 4px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.input-group input:focus {
+    outline: none;
+    background: #283246;
+    border-color: #64b4ff;
+}
+
+.input-group input[readonly] {
+    color: #8c8c8c;
+    border-color: #283246;
+}
+
+.action-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.btn-success {
+    background: #287850;
+    border-color: #3c8c64;
+}
+
+.btn-success:hover {
+    background: #3c8c64;
+}
+
+.btn-danger {
+    background: #963232;
+    border-color: #aa4646;
+}
+
+.btn-danger:hover {
+    background: #aa4646;
+}
+
+.formulas {
+    margin-top: 20px;
+    font-size: 12px;
+    color: #9696aa;
+    line-height: 1.5;
+}
