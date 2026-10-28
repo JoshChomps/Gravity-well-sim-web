@@ -31,6 +31,9 @@ env/
 .vscode/
 *.swp
 
+# Node
+node_modules/
+
 # Local-only files: AI tool configs, interview notes, secrets, editor locks
 CLAUDE.md
 AGENTS.md

@@ -1,0 +1,11 @@
+{
+  "name": "gravity-well-sim-web",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test"
+  },
+  "devDependencies": {
+    "three": "0.160.0"
+  }
+}

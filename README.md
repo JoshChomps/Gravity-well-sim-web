@@ -21,6 +21,15 @@ Then, open your web browser and navigate to:
 
 *(Note: The `server.py` script is a custom Python HTTP server designed to explicitly disable browser caching, which is extremely helpful when making live code edits).*
 
+## Tests
+
+The physics in `js/physics.js` (forces, Velocity Verlet, collisions and merges) is tested with Node's built-in test runner. Nothing is rendered, so no browser is needed:
+
+```bash
+npm install
+npm test
+```
+
 ## Deployment
 
 This version consists entirely of static HTML, CSS, and JS files. There is no backend or build step required.  
